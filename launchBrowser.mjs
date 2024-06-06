@@ -10,6 +10,7 @@ export const handler = async (preset, fonts) => {
 
   try {
     browser = await puppeteer.launch({
+      executablePath: '/opt/render/.cache/puppeteer/chrome',
       headless: true,
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
