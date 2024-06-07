@@ -4,7 +4,7 @@ import puppeteer from 'puppeteer';
 import { prepearBody } from './prepearBody.mjs';
 import { secureURL } from './secureUrl.mjs';
 
-export const handler = async (preset, fonts) => {
+export const handler = async (preset, fonts, start) => {
   let browser = null;
   let result = null;
 
@@ -34,13 +34,17 @@ export const handler = async (preset, fonts) => {
       { waitUntil: 'networkidle0' }
     );
 
-    console.log('page created');
+    const pageTime = Date.now();
+
+    console.log('page created------', pageTime - start);
 
     await page.addScriptTag({
       url: 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.5.0/fabric.min.js',
     });
 
-    console.log('fabric loadded');
+    const fabricTime = Date.now();
+
+    console.log('fabric loadded-------', fabricTime - start);
 
     page.on('console', (msg) => {
       console.log('PAGE LOG:', msg.text());
@@ -67,12 +71,15 @@ export const handler = async (preset, fonts) => {
       }
     );
 
-    // prepearBody(preset.body.objects);
-    preset.body.objects = preset.body.objects.filter((object) => {
-      return object.type !== 'image';
-    });
+    const fontsTime = Date.now();
+    console.log('fonts added-------', fontsTime - start);
 
-    console.log('body prepared');
+    await prepearBody(preset.body.objects);
+    // preset.body.objects = preset.body.objects.filter((object) => {
+    //   return object.type !== 'image';
+    // });
+    const prepearTime = Date.now();
+    console.log('body prepared', prepearTime - start);
 
     const canvasImage = await page.evaluate(
       async ({ template }) => {
@@ -86,7 +93,7 @@ export const handler = async (preset, fonts) => {
 
         console.log('fabricCanvas  created');
         const base64 = await new Promise((resolve) => {
-          canvas.loadFromJSON(template.body, () => {
+          canvas.loadFromJSON(JSON.stringify(template.body), () => {
             const imageFilters = {
               mask_filter: 1,
               opacity_filter: 2,

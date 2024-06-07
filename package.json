@@ -19,7 +19,13 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "puppeteer": "^22.10.0"
+    "puppeteer": "^22.10.0",
+    "@aws-crypto/sha256-browser": "^2.0.1",
+    "@aws-sdk/client-lambda": "^3.112.0",
+    "@aws-sdk/client-s3": "^3.48.0",
+    "@aws-sdk/credential-providers": "^3.48.0",
+    "@aws-sdk/lib-storage": "^3.49.0",
+    "@aws-sdk/s3-request-presigner": "^3.113.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.2"

@@ -8,9 +8,13 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/', async (req, res) => {
+  const start = Date.now();
+  console.log('started -------- 0');
   try {
     const { preset, fontsArr } = req.body;
-    const content = await handler(preset, fontsArr);
+    const content = await handler(preset, fontsArr, start);
+    const end = Date.now();
+    console.log(`Elapsed time: ${end - start}ms`);
     res.send(content);
   } catch (error) {
     console.error('Error launching browser:', error);
