@@ -79,10 +79,10 @@ export const handler = async (preset, fonts, start) => {
     //   return object.type !== 'image';
     // });
     const prepearTime = Date.now();
-    console.log('body prepared', prepearTime - start);
+    console.log('body prepared----------', prepearTime - start);
 
     const canvasImage = await page.evaluate(
-      async ({ template }) => {
+      async ({ template, start }) => {
         const canvasElement = document.createElement('canvas');
         console.log('canvas created');
         canvasElement.width = template.width;
@@ -90,8 +90,8 @@ export const handler = async (preset, fonts, start) => {
         document.body.appendChild(canvasElement);
 
         const canvas = new fabric.Canvas(canvasElement);
-
-        console.log('fabricCanvas  created');
+        const fabricTime = Date.now();
+        console.log('fabricCanvas  created-------', fabricTime - start);
         const base64 = await new Promise((resolve) => {
           canvas.loadFromJSON(JSON.stringify(template.body), () => {
             const imageFilters = {
@@ -100,8 +100,8 @@ export const handler = async (preset, fonts, start) => {
               blur_filter: 3,
               blend_filter: 5,
             };
-
-            console.log('json parsed');
+            const jsonTime = Date.now();
+            console.log('json parsed----------', jsonTime - start);
             const objects = canvas.getObjects();
 
             const setFilters = (element) => {
@@ -141,6 +141,9 @@ export const handler = async (preset, fonts, start) => {
 
             applyFilters(objects);
 
+            const filterTime = Date.now();
+            console.log('filters applied----------', filterTime - start);
+
             canvas.renderAll();
             console.log('<<<canvas rendered>>');
             const base64 = canvas.toDataURL();
@@ -150,7 +153,7 @@ export const handler = async (preset, fonts, start) => {
         });
         return base64;
       },
-      { template: preset }
+      { template: preset, start }
     );
 
     result = {
